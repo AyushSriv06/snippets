@@ -1,0 +1,36 @@
+10-Cluster Deployment (Current):
+  Total Tunnels: 45
+  CPU Usage: ~9 cores
+  Memory Usage: ~11.25 GB
+  Network Overhead: 45 keepalive connections
+
+
+
+apiVersion: networking.kubeslice.io/v1beta1
+kind: Slice
+metadata:
+  name: enterprise-topology
+spec:
+  clusters:
+    - datacenter-hub
+    - edge-location-1
+    - edge-location-2
+    - branch-office
+  
+  topology:
+    type: "hub-spoke"
+    hubSpoke:
+      hub: "datacenter-hub"
+      spokes: ["edge-location-1", "edge-location-2", "branch-office"]
+    
+    vpnRoles:
+      datacenter-hub: "server"    # Public IP, accepts connections
+      edge-location-1: "client"   # Behind NAT
+      edge-location-2: "client"   # Behind NAT
+      branch-office: "client"     # Corporate firewall
+
+status:
+  topologyStatus:
+    tunnelCount: 3
+    validated: true
+    connectedClusters: 4
